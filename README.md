@@ -25,9 +25,4 @@ Slouží k úpravě tohoto úložiště v aplikaci MakeCode.
 -
 -
 -
--
--
--
--
--
 <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/07818d10-8c88-47f9-a3a8-28cd53f291ff" />
