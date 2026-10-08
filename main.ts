@@ -32,6 +32,7 @@ function resetGame () {
     py = 0
     delay = 1000 - level * 80
     step = 5 + level * 5
+    music.play(music.builtinPlayableSoundEffect(soundExpression.hello), music.PlaybackMode.InBackground)
     basic.clearScreen()
     snake = game.createSprite(px, py)
     apple = game.createSprite(2, 2)
@@ -104,7 +105,7 @@ let MIN_DELAY = 100
 // 0 = menu, 1 = hra běží, 2 = zaneprázdněno (intro, konec hry)
 mode = 2
 level = 1
-music.play(music.stringPlayable("B - B - F B - - ", 200), music.PlaybackMode.UntilDone)
+music.play(music.stringPlayable("B - B - F B - - ", 200), music.PlaybackMode.InBackground)
 basic.showString("HI!")
 basic.showIcon(IconNames.Heart)
 basic.pause(500)
