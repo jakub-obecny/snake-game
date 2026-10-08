@@ -13,7 +13,7 @@ function turnLeft () {
     direction = (direction + 3) % 4
 }
 function resetGame () {
-    music.play(music.stringPlayable("A C5 A C5 A C5 A C5 ", 450), music.PlaybackMode.InBackground)
+    music.play(music.stringPlayable("A C5 A C5 A C5 A C5 ", 435), music.PlaybackMode.InBackground)
     score = 0
     direction = 0
     px = 0
