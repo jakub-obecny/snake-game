@@ -1,9 +1,6 @@
 enum RadioMessage {
     message1 = 49434
 }
-/**
- * made with love https://helloacm.com/microbit-programming-the-development-of-a-snake-eating-apple-game-and-ai-version-1-snake-does-not-grow/
- */
 function moveForward () {
     dx = dxOffset[direction]
     px += dx[0]
@@ -58,6 +55,7 @@ let score = 0
 let direction = 0
 let dx: number[] = []
 let dxOffset: number[][] = []
+music.play(music.builtinPlayableSoundEffect(soundExpression.hello), music.PlaybackMode.InBackground)
 basic.showString("HI!")
 basic.showIcon(IconNames.Heart)
 let py = 0
