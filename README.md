@@ -22,19 +22,14 @@ Slouží k úpravě tohoto úložiště v aplikaci MakeCode.
 
 * for PXT/microbit
 <script src="https://makecode.com/gh-pages-embed.js"></script><script>makeCodeRender("{{ site.makecode.home_url }}", "{{ site.github.owner_name }}/{{ site.github.repository_name }}");</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
 <img width="350" height="168" alt="image" src="https://github.com/user-attachments/assets/d6895627-ca2a-40e8-b35b-3fc58cf8d0d0" />
