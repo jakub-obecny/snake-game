@@ -1,20 +1,3 @@
-/**
- * ===== SNAKE pro micro:bit =====
- * 
- * Menu (po zapnutí): A = obtížnost níž, B = obtížnost výš, na krajích se zalamuje (1 a níž = 8, 8 a výš = 1)
- * 
- * A+B = potvrdit a spustit hru
- * 
- * Ve hře: A = zatočit doleva, B = zatočit doprava (A+B ve hře nic nedělá)
- * 
- * Po konci hry: skóre a pak svítí šipka ◄► až do nové hry; A/B změní úroveň (číslo se ukáže na chvíli), A+B = hrát znovu
- * 
- * Tempo: start = 1000 - úroveň * 80 ms, zrychlení za jablko = 5 + úroveň * 5 ms, minimum 100 ms
- * 
- * Jablko se losuje z 24 volných políček (hlava hada je vynechaná), bez opakovaného losování
- * 
- * Hra kreslí přímo LEDkami (led.plot), ne přes sprity: sprity spouští na pozadí vlastní překreslování, které mazalo šipku
- */
 function moveForward () {
     // směr: 0 = doprava, 1 = dolů, 2 = doleva, 3 = nahoru
     if (direction % 2 == 0) {
@@ -67,6 +50,23 @@ function gameOver () {
 function turnRight () {
     direction = (direction + 1) % 4
 }
+/**
+ * ===== SNAKE pro micro:bit =====
+ * 
+ * Menu (po zapnutí): A = obtížnost níž, B = obtížnost výš, na krajích se zalamuje (1 a níž = 8, 8 a výš = 1)
+ * 
+ * A+B = potvrdit a spustit hru
+ * 
+ * Ve hře: A = zatočit doleva, B = zatočit doprava (A+B ve hře nic nedělá)
+ * 
+ * Po konci hry: skóre a pak svítí šipka ◄► až do nové hry; A/B změní úroveň (číslo se ukáže na chvíli), A+B = hrát znovu
+ * 
+ * Tempo: start = 1000 - úroveň * 80 ms, zrychlení za jablko = 5 + úroveň * 5 ms, minimum 100 ms
+ * 
+ * Jablko se losuje z 24 volných políček (hlava hada je vynechaná), bez opakovaného losování
+ * 
+ * Hra kreslí přímo LEDkami (led.plot), ne přes sprity: sprity spouští na pozadí vlastní překreslování, které mazalo šipku
+ */
 function showLevel () {
     basic.showNumber(level)
     if (arrowMenu) {
