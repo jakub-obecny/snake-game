@@ -58,6 +58,8 @@ let score = 0
 let direction = 0
 let dx: number[] = []
 let dxOffset: number[][] = []
+basic.showString("HI!")
+basic.showIcon(IconNames.Heart)
 let py = 0
 let px = 0
 dxOffset = [
