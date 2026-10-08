@@ -81,6 +81,7 @@ function showLevel () {
 input.onButtonPressed(Button.AB, function () {
     if (mode == 0) {
         resetGame()
+        music.setVolume(85)
     }
 })
 input.onButtonPressed(Button.B, function () {
