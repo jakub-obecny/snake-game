@@ -104,7 +104,7 @@ let MIN_DELAY = 100
 // 0 = menu, 1 = hra běží, 2 = zaneprázdněno (intro, konec hry)
 mode = 2
 level = 1
-music.play(music.builtinPlayableSoundEffect(soundExpression.hello), music.PlaybackMode.InBackground)
+music.play(music.stringPlayable("B - B - F B - - ", 200), music.PlaybackMode.UntilDone)
 basic.showString("HI!")
 basic.showIcon(IconNames.Heart)
 basic.pause(500)
