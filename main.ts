@@ -1,5 +1,12 @@
+// PO SPUŠTĚNÍ A UVÍTACÍ MELODII SE VÁM ZOBRAZÍ ČÍSLA, TO JSOU ÚROVNĚ OBTÍŽNOSTI 1 AŽ 8
+// 
+// tlačítko A= úroveň dolů
+// 
+// tlačítko B= úroveň nahoru
+function saveHighScore () {
+    flashstorage.put("snake_highscore", "" + highScore)
+}
 function moveForward () {
-    // směr: 0 = doprava, 1 = dolů, 2 = doleva, 3 = nahoru
     if (direction % 2 == 0) {
         px += 1 - direction
     } else {
@@ -13,30 +20,60 @@ function turnLeft () {
     direction = (direction + 3) % 4
 }
 function resetGame () {
-    music.play(music.stringPlayable("A C5 A C5 A C5 A C5 ", 435), music.PlaybackMode.InBackground)
+    music.play(music.stringPlayable("A C5 A C5 A C5 A C5 ", 450), music.PlaybackMode.InBackground)
     score = 0
     direction = 0
     px = 0
     py = 0
     delay = 1000 - level * 80
     step = 5 + level * 5
+    // Nová hra už není v menu po Game Over
+    arrowMenu = false
+    saveMenuState()
     basic.clearScreen()
     led.plot(px, py)
     placeNextApple()
     mode = 1
 }
+function saveMenuState () {
+    flashstorage.put("snake_level", "" + level)
+    flashstorage.put("snake_arrow", arrowMenu ? "1" : "0")
+}
 input.onButtonPressed(Button.A, function () {
     if (mode == 0) {
         level = (level + 6) % 8 + 1
+        saveMenuState()
         showLevel()
     } else if (mode == 1) {
         turnLeft()
     }
 })
+// Dotyk loga na micro:bitu V2
+input.onLogoEvent(TouchButtonEvent.Pressed, function () {
+    if (mode == 0) {
+        showHighScore()
+    }
+})
+function loadMenuState () {
+    savedLevel = flashstorage.get("snake_level")
+    savedArrow = flashstorage.get("snake_arrow")
+    if (savedLevel != "") {
+        parsedLevel = parseInt(savedLevel)
+        if (parsedLevel >= 1 && parsedLevel <= 8) {
+            level = parsedLevel
+        }
+    }
+    arrowMenu = savedArrow == "1"
+}
 function gameOver () {
     basic.clearScreen()
-    music.play(music.builtinPlayableSoundEffect(soundExpression.sad), music.PlaybackMode.InBackground)
     mode = 2
+    // Ulož rekord pouze při jeho překonání
+    if (score > highScore) {
+        highScore = score
+        saveHighScore()
+    }
+    music.play(music.builtinPlayableSoundEffect(soundExpression.sad), music.PlaybackMode.InBackground)
     basic.pause(1000)
     basic.showString("GAME OVER")
     basic.showNumber(score)
@@ -44,29 +81,13 @@ function gameOver () {
         basic.pause(1500)
     }
     arrowMenu = true
+    saveMenuState()
     showArrow()
     mode = 0
 }
 function turnRight () {
     direction = (direction + 1) % 4
 }
-/**
- * ===== SNAKE pro micro:bit =====
- * 
- * Menu (po zapnutí): A = obtížnost níž, B = obtížnost výš, na krajích se zalamuje (1 a níž = 8, 8 a výš = 1)
- * 
- * A+B = potvrdit a spustit hru
- * 
- * Ve hře: A = zatočit doleva, B = zatočit doprava (A+B ve hře nic nedělá)
- * 
- * Po konci hry: skóre a pak svítí šipka ◄► až do nové hry; A/B změní úroveň (číslo se ukáže na chvíli), A+B = hrát znovu
- * 
- * Tempo: start = 1000 - úroveň * 80 ms, zrychlení za jablko = 5 + úroveň * 5 ms, minimum 100 ms
- * 
- * Jablko se losuje z 24 volných políček (hlava hada je vynechaná), bez opakovaného losování
- * 
- * Hra kreslí přímo LEDkami (led.plot), ne přes sprity: sprity spouští na pozadí vlastní překreslování, které mazalo šipku
- */
 function showLevel () {
     basic.showNumber(level)
     if (arrowMenu) {
@@ -81,19 +102,27 @@ function showLevel () {
 input.onButtonPressed(Button.AB, function () {
     if (mode == 0) {
         resetGame()
-        music.setVolume(85)
     }
 })
 input.onButtonPressed(Button.B, function () {
     if (mode == 0) {
         level = level % 8 + 1
+        saveMenuState()
         showLevel()
     } else if (mode == 1) {
         turnRight()
     }
 })
+function loadHighScore () {
+    saved = flashstorage.get("snake_highscore")
+    if (saved != "") {
+        highScore = parseInt(saved)
+    } else {
+        highScore = 0
+    }
+}
 function placeNextApple () {
-    // políčka jsou číslovaná 0..24 (řádek * 5 + sloupec); hlava zabírá jedno z nich
+    // Losování ze všech polí kromě pozice hráče
     cell = randint(0, 23)
     if (cell >= py * 5 + px) {
         cell += 1
@@ -104,10 +133,48 @@ function placeNextApple () {
 }
 function showMenu () {
     mode = 0
-    basic.showNumber(level)
+    saveMenuState()
+    if (arrowMenu) {
+        showArrow()
+    } else {
+        basic.showNumber(level)
+    }
 }
 function validPixelCoordinate (nx: number, ny: number) {
     return nx >= 0 && nx <= 4 && ny >= 0 && ny <= 4
+}
+function showHighScore () {
+    if (mode != 0) {
+        return
+    }
+    // Zapamatuj přesnou obrazovku a obtížnost
+    returnLevel = level
+    returnArrow = arrowMenu
+    flashstorage.put("snake_return_level", "" + returnLevel)
+    flashstorage.put("snake_return_arrow", returnArrow ? "1" : "0")
+    // Zabraň opakovanému spuštění během zobrazení
+    mode = 2
+    loadHighScore()
+    basic.clearScreen()
+    basic.showNumber(highScore)
+    basic.clearScreen()
+    // Obnov původní obrazovku
+    savedLevel2 = flashstorage.get("snake_return_level")
+    savedArrow2 = flashstorage.get("snake_return_arrow")
+    if (savedLevel2 != "") {
+        parsedLevel2 = parseInt(savedLevel2)
+        if (parsedLevel2 >= 1 && parsedLevel2 <= 8) {
+            level = parsedLevel2
+        }
+    }
+    arrowMenu = savedArrow2 == "1"
+    saveMenuState()
+    mode = 0
+    if (arrowMenu) {
+        showArrow()
+    } else {
+        basic.showNumber(level)
+    }
 }
 function showArrow () {
     basic.showLeds(`
@@ -118,26 +185,45 @@ function showArrow () {
         . . . . .
         `, 0)
 }
+/**
+ * PO SPUŠTĚNÍ A UVÍTACÍ MELODII SE VÁM ZOBRAZÍ ČÍSLA, TO JSOU ÚROVNĚ OBTÍŽNOSTI 1 AŽ 8
+ * 
+ * tlačítko A= úroveň dolů
+ * 
+ * tlačítko B= úroveň nahoru
+ */
 let oy = 0
 let ox = 0
+let parsedLevel2 = 0
+let savedArrow2 = ""
+let savedLevel2 = ""
+let returnLevel = 0
 let ay = 0
 let ax = 0
 let cell = 0
+let saved = ""
 let lastPress = 0
 let t = 0
-let arrowMenu = false
+let parsedLevel = 0
+let savedArrow = ""
+let savedLevel = ""
 let step = 0
 let delay = 0
 let score = 0
 let py = 0
 let px = 0
 let direction = 0
-let level = 0
+let highScore = 0
 let mode = 0
-let MIN_DELAY = 100
-// 0 = menu, 1 = hra běží, 2 = zaneprázdněno (intro, konec hry)
-mode = 2
+let level = 0
+let arrowMenu = false
+let returnArrow = false
 level = 1
+mode = 2
+let MIN_DELAY = 100
+// Nejdříve načti uložené hodnoty
+loadHighScore()
+loadMenuState()
 music.play(music.builtinPlayableSoundEffect(soundExpression.hello), music.PlaybackMode.InBackground)
 basic.showString("HI!")
 basic.showIcon(IconNames.Heart)
