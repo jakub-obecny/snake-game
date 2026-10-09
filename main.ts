@@ -35,8 +35,8 @@ input.onButtonPressed(Button.A, function () {
 })
 function gameOver () {
     basic.clearScreen()
+    music.play(music.builtinPlayableSoundEffect(soundExpression.sad), music.PlaybackMode.InBackground)
     mode = 2
-    music.play(music.tonePlayable(988, music.beat(BeatFraction.Half)), music.PlaybackMode.UntilDone)
     basic.pause(1000)
     basic.showString("GAME OVER")
     basic.showNumber(score)
